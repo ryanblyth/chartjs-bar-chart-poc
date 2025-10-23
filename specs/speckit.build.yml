@@ -1,0 +1,70 @@
+version: 1
+name: co-cities-chartjs-top15
+goal: >
+  Implement a vertical Chart.js bar chart showing the Top 15 Colorado places by population.
+  Bars sorted by population descending; optional color by density (/mi²).
+  Emit a DOM CustomEvent `chart:selection` with `{ geoids: string[] }` on bar click selection.
+  Use **Chart.js built-in animations** (no GSAP) for entrance and updates. ScrollTrigger may be added later only for scrubbed sequences.
+
+constraints:
+  - Keep chart config/theme utilities under `src/chartjs/` (e.g., `theme.js`, `buildChart.js`).
+  - Data must be loaded from `/data/colorado-cities-enriched.geojson`.
+  - Compute rank by population in JS and render only Top 15.
+  - Ensure chart is accessible and responsive.
+  - Do **not** use GSAP for standard chart animations; rely on Chart.js animation config.
+  - If scroll-driven scrub is added later, isolate it in a separate module (no change to base animations).
+  - Provide a single HTML entry (`index.html`) with a container and minimal CSS for responsiveness.
+
+deliverables:
+  - public/index.html (container, script tags or Vite entry; accessible title and description)
+  - src/main.js (fetch + transform GeoJSON, build dataset, wire selection events)
+  - src/chartjs/buildChart.js (factory to create/update Chart instance)
+  - src/chartjs/theme.js (palette + number formatters + axis/tooltip defaults)
+  - src/styles.css (responsive container, font settings)
+  - data/colorado-cities-enriched.geojson (input file path; assume provided by user)
+  - README.md (how to run with Vite or static server)
+
+implementation_notes:
+  - Transform: FeatureCollection.features → rows with { geoid: properties.GEOID, name: properties.NAME, pop: properties.pop, density: properties.density }.
+  - Rank: sort by pop desc; slice(0, 15); preserve order for chart labels.
+  - Chart.js setup (bar chart):
+      type: 'bar'
+      data: { labels: names, datasets: [ { label: 'Population', data: pops, backgroundColor: colorByDensity(density), borderWidth: 1 } ] }
+      options:
+        responsive: true
+        maintainAspectRatio: false
+        parsing: false
+        animation:
+          duration: 900
+          easing: 'easeOutQuart'
+        scales:
+          x:
+            type: 'category'
+            ticks:
+              autoSkip: true
+              maxRotation: 40
+              minRotation: 0
+          y:
+            type: 'linear'
+            beginAtZero: true
+            ticks:
+              callback: formatK  # e.g., 12500 -> "12.5k"
+        plugins:
+          legend:
+            display: false
+          tooltip:
+            callbacks:
+              label: tooltipLabelFormatter  # include commas and density if available
+  - Selection: on canvas click, use `chart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, false)` to find bar index → toggle selection state → dispatch CustomEvent('chart:selection', { detail: { geoids: [...] } }).
+  - Highlight selection: use scriptable context (`backgroundColor: ctx => ...`) to color selected vs unselected; call `chart.update()` with mode 'active' or 'none' as appropriate.
+  - Color by density (optional): implement a small sequential ramp (e.g., interpolate between light and dark hue) using min/max density from the Top 15 subset.
+  - Number formatting: implement `formatK(value)` to format ticks and tooltip numbers.
+
+acceptance_tests:
+  - Renders Top 15 correctly from GeoJSON.
+  - `chart:selection` event emitted with correct GEOIDs (single and multi-select if enabled).
+  - Accessible structure (role, aria-label on canvas container; offscreen table link).
+  - **No GSAP dependency**; animations use Chart.js options only.
+  - Responsive labels with rotation/skipping when narrow.
+  - Y-axis uses K notation; tooltips show comma-separated values.
+  - Clean, optimized code with no unnecessary dependencies.
