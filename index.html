@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Top 15 Colorado Cities by Population</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+    <body>
+    <main>
+      <header>
+        <h1>Top 15 Colorado Cities by Population</h1>
+        <p>Interactive bar chart showing the most populous cities in Colorado. Click bars to select cities and view detailed information.</p>
+      </header>
+      
+      <div class="chart-container" role="img" aria-label="Bar chart showing top 15 Colorado cities by population">
+        <div class="chart-wrap">
+          <canvas id="chart"></canvas>
+        </div>
+        <div class="scroll-indicator">← Scroll to see more →</div>
+        <div class="chart-controls">
+          <button id="download-csv" class="btn">Download data (CSV)</button>
+          <p class="data-source">Data source: Colorado cities GeoJSON</p>
+        </div>
+      </div>
+    </main>
+    
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

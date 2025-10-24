@@ -1,0 +1,225 @@
+/* Reset and base styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f8f9fa;
+}
+
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+header p {
+  font-size: 1.1rem;
+  color: #666;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Chart container */
+.chart-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.chart-wrap {
+  position: relative;
+  height: 480px;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+#chart {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Chart controls */
+.chart-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.btn:hover {
+  background: #0056b3;
+}
+
+.btn:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+.data-source {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0;
+}
+
+/* Scroll indicator - subtle but visible */
+.scroll-indicator {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: rgba(0, 0, 0, 0.55);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  display: none;
+  visibility: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 10;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  main {
+    padding: 1rem 0.5rem;
+  }
+  
+  h1 {
+    font-size: 2rem;
+  }
+  
+  .chart-container {
+    padding: 1rem;
+  }
+  
+  .chart-wrap {
+    height: 420px;
+  }
+  
+  .chart-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .btn {
+    text-align: center;
+  }
+}
+
+/* Mobile styles - consolidated for screens ≤480px */
+@media (max-width: 480px) {
+  
+  /* === Typography Adjustments === */
+  h1 {
+    font-size: 1.75rem;
+  }
+  
+  header p {
+    font-size: 1rem;
+  }
+  
+  /* === Chart Container Sizing === */
+  .chart-wrap {
+    height: 400px;
+  }
+  
+  /* === Mobile Horizontal Scroll (Default) === */
+  .chart-container {
+    position: relative;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .chart-container .chart-wrap {
+    width: 480px;
+    min-width: 480px;
+    height: 400px;
+  }
+  
+  .chart-container .chart-wrap canvas {
+    width: 480px;
+    height: 400px;
+  }
+  
+  /* === Mobile Horizontal Scroll (Disabled) === */
+  .chart-container.no-horizontal-mobile-scroll {
+    overflow-x: visible;
+    overflow-y: visible;
+  }
+  
+  .chart-container.no-horizontal-mobile-scroll .chart-wrap {
+    width: auto;
+    min-width: auto;
+  }
+  
+  .chart-container.no-horizontal-mobile-scroll .chart-wrap canvas {
+    width: 100%;
+    height: 100%;
+  }
+  
+  /* === Scroll Indicator (Show when scrollable) === */
+  .chart-container:not(.no-horizontal-mobile-scroll) .scroll-indicator {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+
+/* High contrast for accessibility */
+@media (prefers-contrast: high) {
+  .chart-container {
+    border: 2px solid #000;
+  }
+  
+  .btn {
+    border: 2px solid #000;
+  }
+}
+
+/* Focus styles for keyboard navigation */
+.chart-container:focus-within {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}

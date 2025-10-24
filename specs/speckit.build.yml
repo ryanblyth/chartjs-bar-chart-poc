@@ -68,3 +68,27 @@ acceptance_tests:
   - Responsive labels with rotation/skipping when narrow.
   - Y-axis uses K notation; tooltips show comma-separated values.
   - Clean, optimized code with no unnecessary dependencies.
+
+mobile_features:
+  - id: responsive-mobile
+    description: Implement responsive mobile layout with horizontal scroll.
+    acceptance:
+      - Chart width 480px on mobile (≤480px) with horizontal scroll.
+      - Legend positioned at bottom on mobile, right on desktop.
+      - City labels sized appropriately (10px on small mobile).
+      - Scroll indicator appears when chart is scrollable.
+
+  - id: mobile-scroll-config
+    description: Add configurable mobile scroll functionality.
+    acceptance:
+      - 'mobile-scroll' class enables/disables horizontal scroll.
+      - toggleMobileScroll() function for dynamic control.
+      - Scroll indicator shows/hides based on scroll state.
+
+  - id: animation-config
+    description: Add configurable animation system.
+    acceptance:
+      - 'no-animations' class disables all animations globally.
+      - 'no-mobile-animations' class disables animations on mobile only.
+      - toggleAnimations() and toggleMobileAnimations() functions.
+      - shouldAnimate() function respects configuration classes.
