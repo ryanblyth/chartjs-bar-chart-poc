@@ -166,6 +166,49 @@ fonts: {
 - Indicator hides when scrolled or at end
 - Controlled by `updateScrollIndicator()` function
 
+## 🎬 ScrollTrigger Configuration
+
+### Enable ScrollTrigger
+Add class to `<body>` tag:
+```html
+<body class="scrolltrigger-enabled">
+```
+
+Or use URL parameter:
+```
+http://localhost:5173/?scrolltrigger=true
+```
+
+### ScrollTrigger Options
+Edit `src/main.js` in `initScrollTrigger()` method:
+
+```javascript
+this.scrollTrigger = enableScrollTrigger(this.chart, {
+  trigger: '.chart-container',    // Element to trigger on
+  start: 'top center',            // When to start
+  end: 'bottom center',           // When to end
+  scrub: 1,                       // Smooth scrubbing (0 = instant)
+  pin: false                      // Pin element during scroll
+});
+```
+
+### Disable ScrollTrigger
+Add class to disable:
+```html
+<body class="no-scrolltrigger">
+```
+
+Or use JavaScript:
+```javascript
+window.disableScrollTrigger();
+```
+
+### ScrollTrigger Debugging
+Add debug class to see ScrollTrigger status:
+```html
+<body class="scrolltrigger-enabled scrolltrigger-debug">
+```
+
 ## 🎨 Customization Examples
 
 ### Custom Color Scheme

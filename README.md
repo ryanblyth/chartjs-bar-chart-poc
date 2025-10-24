@@ -218,6 +218,54 @@ export function isMobile() {
 
 For detailed customization options, see [MAINTENANCE.md](./MAINTENANCE.md).
 
+## 🎬 ScrollTrigger Animations
+
+The chart supports optional ScrollTrigger-powered scroll-driven animations:
+
+### Enable ScrollTrigger
+
+**Method 1: URL Parameter**
+```
+http://localhost:5173/?scrolltrigger=true
+```
+
+**Method 2: CSS Class**
+```html
+<body class="scrolltrigger-enabled">
+```
+
+**Method 3: JavaScript**
+```javascript
+// Enable ScrollTrigger scrubbing
+window.enableScrollTrigger();
+
+// Disable ScrollTrigger scrubbing  
+window.disableScrollTrigger();
+
+// Toggle ScrollTrigger
+window.toggleScrollTrigger(true);
+```
+
+### ScrollTrigger Features
+
+- **Scroll-driven reveal**: Bars animate in as you scroll
+- **Smooth scrubbing**: Chart updates smoothly with scroll position
+- **Fallback animation**: Uses Chart.js animations if ScrollTrigger unavailable
+- **No performance impact**: Only loads GSAP/ScrollTrigger when enabled
+
+### ScrollTrigger Configuration
+
+```javascript
+// Custom ScrollTrigger options
+window.enableScrollTrigger({
+  trigger: '.chart-container',
+  start: 'top center',
+  end: 'bottom center', 
+  scrub: 1,
+  pin: false
+});
+```
+
 ## 🔌 API Events
 
 The chart dispatches custom events you can listen to:
@@ -263,6 +311,11 @@ The chart expects GeoJSON with this structure:
 
 - **[MAINTENANCE.md](./MAINTENANCE.md)** - Detailed maintenance and configuration guide
 - **[specs/](./specs/)** - Project specifications and requirements
+  - **[SCROLLTRIGGER-TIMING-GUIDE.md](./specs/SCROLLTRIGGER-TIMING-GUIDE.md)** - ⏱️ Complete timing control guide (animation speed & hold duration)
+  - **[SCROLLTRIGGER-QUICK-REF.md](./specs/SCROLLTRIGGER-QUICK-REF.md)** - Quick reference for ScrollTrigger features
+  - **[scrolltrigger-animation.spec.yml](./specs/scrolltrigger-animation.spec.yml)** - Technical specification
+  - **[scrolltrigger-build.yml](./specs/scrolltrigger-build.yml)** - Integration requirements
+  - **[speckit.build.yml](./specs/speckit.build.yml)** - Main application specifications
 
 ## 📄 License
 
