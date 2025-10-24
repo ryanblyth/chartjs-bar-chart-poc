@@ -64,12 +64,23 @@ export function createTop15Chart(canvas, model, opts = {}) {
       responsive: true,
       maintainAspectRatio: false,
       
-      // Chart.js built-in animations (use default)
-      animation: {
-        duration: 900,
-        easing: 'easeOutQuart',
-        delay: (ctx) => ctx.dataIndex * 50
-      },
+      // Chart.js built-in animations (disable if ScrollTrigger is enabled)
+      animation: (() => {
+        const isScrollTriggerEnabled = document.body.classList.contains('scrolltrigger-enabled') || 
+                                      window.location.search.includes('scrolltrigger=true');
+        
+        if (isScrollTriggerEnabled) {
+          // Disable animations when ScrollTrigger is enabled
+          return false;
+        }
+        
+        // Use default animations
+        return {
+          duration: 900,
+          easing: 'easeOutQuart',
+          delay: (ctx) => ctx.dataIndex * 50
+        };
+      })(),
       
       // Scales configuration
       scales: {
@@ -90,6 +101,7 @@ export function createTop15Chart(canvas, model, opts = {}) {
         },
         y: {
           beginAtZero: true,
+          max: Math.max(...values) * 1.1, // Fix the scale to max value + 10% padding
           ticks: {
             callback: formatK,
             font: {
@@ -142,6 +154,10 @@ export function createTop15Chart(canvas, model, opts = {}) {
   
   // Create chart instance
   const chart = new Chart(canvas, config);
+  
+  // Store original data for ScrollTrigger
+  chart._originalData = [...values];
+  chart._maxValue = Math.max(...values) * 1.1;
   
   // Add click handler for selection
   canvas.addEventListener('click', (evt) => {

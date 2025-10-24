@@ -6,15 +6,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Top 15 Colorado Cities by Population</title>
     <link rel="stylesheet" href="/src/styles.css" />
+    
+    <!-- GSAP and ScrollTrigger - loaded conditionally -->
+    <script>
+      // Check if ScrollTrigger should be enabled after DOM is loaded
+      document.addEventListener('DOMContentLoaded', () => {
+        const enableScrollTrigger = document.body.classList.contains('scrolltrigger-enabled') || 
+                                    window.location.search.includes('scrolltrigger=true');
+        
+        if (enableScrollTrigger) {
+          console.log('ScrollTrigger enabled - loading GSAP and ScrollTrigger');
+          // Load GSAP core
+          const gsapScript = document.createElement('script');
+          gsapScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js';
+          gsapScript.onload = () => {
+            // Load ScrollTrigger after GSAP
+            const stScript = document.createElement('script');
+            stScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js';
+            stScript.onload = () => {
+              // Register ScrollTrigger plugin
+              gsap.registerPlugin(ScrollTrigger);
+              console.log('ScrollTrigger loaded and ready');
+            };
+            document.head.appendChild(stScript);
+          };
+          document.head.appendChild(gsapScript);
+        }
+      });
+    </script>
   </head>
-    <body>
+    <body class="scrolltrigger-enabled scrolltrigger-debug">
     <main>
-      <header>
-        <h1>Top 15 Colorado Cities by Population</h1>
-        <p>Interactive bar chart showing the most populous cities in Colorado. Click bars to select cities and view detailed information.</p>
-      </header>
       
       <div class="chart-container" role="img" aria-label="Bar chart showing top 15 Colorado cities by population">
+        
+        <header>
+            <h1>Top 15 Colorado Cities by Population</h1>
+          </header>
+        
         <div class="chart-wrap">
           <canvas id="chart"></canvas>
         </div>
@@ -23,6 +52,10 @@
           <button id="download-csv" class="btn">Download data (CSV)</button>
           <p class="data-source">Data source: Colorado cities GeoJSON</p>
         </div>
+      </div>
+      
+      <div style="height: 100vh; background: #e9ecef; display: flex; align-items: center; justify-content: center; margin: 0;">
+        <p>Keep scrolling to see more content...</p>
       </div>
     </main>
     
