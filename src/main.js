@@ -1,6 +1,7 @@
 import { createTop15Chart } from './chartjs/buildChart.js';
 import { downloadCSV } from './utils/csv.js';
 import { initMobileFeatures } from './utils/mobile.js';
+import { enableScrollTrigger, disableScrollTrigger, toggleScrollTrigger, isScrollTriggerAvailable } from './scroll/scrolltrigger.js';
 
 /**
  * Main application entry point
@@ -9,6 +10,7 @@ class ColoradoCitiesChart {
   constructor() {
     this.chart = null;
     this.data = null;
+    this.scrollTrigger = null;
     this.init();
   }
 
@@ -16,6 +18,15 @@ class ColoradoCitiesChart {
     try {
       // Load and transform data
       await this.loadData();
+      
+      // Check if ScrollTrigger is enabled and wait for it to load
+      const isScrollTriggerEnabled = document.body.classList.contains('scrolltrigger-enabled') || 
+                                    window.location.search.includes('scrolltrigger=true');
+      
+      if (isScrollTriggerEnabled) {
+        console.log('ScrollTrigger enabled - waiting for GSAP/ScrollTrigger to load...');
+        await this.waitForScrollTrigger();
+      }
       
       // Create chart
       this.createChart();
@@ -25,6 +36,9 @@ class ColoradoCitiesChart {
       
       // Initialize mobile features
       initMobileFeatures();
+      
+      // Initialize ScrollTrigger if enabled
+      this.initScrollTrigger();
       
       console.log('Colorado Cities Chart initialized successfully');
     } catch (error) {
@@ -173,9 +187,96 @@ class ColoradoCitiesChart {
       `;
     }
   }
+
+  /**
+   * Wait for ScrollTrigger to be available
+   */
+  async waitForScrollTrigger() {
+    return new Promise((resolve) => {
+      const checkScrollTrigger = () => {
+        if (isScrollTriggerAvailable()) {
+          console.log('ScrollTrigger is now available');
+          resolve();
+        } else {
+          console.log('Waiting for ScrollTrigger...');
+          setTimeout(checkScrollTrigger, 100);
+        }
+      };
+      checkScrollTrigger();
+    });
+  }
+
+  /**
+   * Initialize ScrollTrigger if enabled
+   */
+  initScrollTrigger() {
+    // Check if ScrollTrigger should be enabled
+    const isEnabled = document.body.classList.contains('scrolltrigger-enabled') || 
+                     window.location.search.includes('scrolltrigger=true');
+    
+    if (isEnabled && this.chart) {
+      // ScrollTrigger should already be available since we waited for it
+      if (isScrollTriggerAvailable()) {
+        // Add a small delay to ensure chart is fully rendered
+        setTimeout(() => {
+          this.scrollTrigger = enableScrollTrigger(this.chart, {
+            trigger: '.chart-container',
+            start: 'top top', // Start when chart top hits viewport top
+            end: '+=1000', // Total scroll distance (bars animate in first 60%, hold remaining 40%)
+            scrub: 1,
+            pin: true, // Pin the chart during animation
+            markers: false // Set to true for debugging
+          });
+          console.log('ScrollTrigger enabled for chart with pinning');
+        }, 100);
+      } else {
+        console.warn('ScrollTrigger not available despite waiting');
+      }
+    }
+  }
+
+  /**
+   * Toggle ScrollTrigger scrubbing
+   * @param {boolean} enabled - Whether to enable scrubbing
+   */
+  toggleScrollTriggerScrubbing(enabled) {
+    if (!this.chart) return;
+    
+    if (enabled) {
+      this.scrollTrigger = enableScrollTrigger(this.chart);
+      console.log('ScrollTrigger scrubbing enabled');
+    } else {
+      disableScrollTrigger(this.chart);
+      this.scrollTrigger = null;
+      console.log('ScrollTrigger scrubbing disabled');
+    }
+  }
 }
 
 // Initialize the application when DOM is loaded
+let chartApp = null;
+
 document.addEventListener('DOMContentLoaded', () => {
-  new ColoradoCitiesChart();
+  chartApp = new ColoradoCitiesChart();
 });
+
+// Global functions for ScrollTrigger control
+window.toggleScrollTrigger = (enabled) => {
+  if (chartApp) {
+    chartApp.toggleScrollTriggerScrubbing(enabled);
+  }
+};
+
+window.enableScrollTrigger = () => {
+  if (chartApp) {
+    chartApp.toggleScrollTriggerScrubbing(true);
+  }
+};
+
+window.disableScrollTrigger = () => {
+  if (chartApp) {
+    chartApp.toggleScrollTriggerScrubbing(false);
+  }
+};
+
+window.isScrollTriggerAvailable = isScrollTriggerAvailable;

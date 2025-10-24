@@ -15,7 +15,6 @@ body {
 main {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 1rem;
 }
 
 header {
@@ -42,8 +41,6 @@ header p {
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
-  margin-bottom: 2rem;
 }
 
 .chart-wrap {
@@ -222,4 +219,39 @@ header p {
 .chart-container:focus-within {
   outline: 2px solid #007bff;
   outline-offset: 2px;
+}
+
+/* ScrollTrigger styles */
+.scrolltrigger-enabled .chart-container {
+  /* Ensure chart container is ready for ScrollTrigger */
+  position: relative;
+}
+
+.scrolltrigger-enabled .chart-container.pinned {
+  /* Styles when chart is pinned by ScrollTrigger */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+}
+
+/* ScrollTrigger control classes */
+.no-scrolltrigger .chart-container {
+  /* Disable ScrollTrigger effects */
+  position: static !important;
+}
+
+/* ScrollTrigger debugging */
+.scrolltrigger-debug .chart-container::before {
+  content: "ScrollTrigger Active";
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(0, 123, 255, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  z-index: 1000;
 }
