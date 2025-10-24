@@ -1,0 +1,30 @@
+version: 1
+name: scrolltrigger-animations-chartjs
+goal: >
+  Add optional ScrollTrigger-powered scrubbing for the bar reveal while keeping
+  **Chart.js built-in animations** for normal loads and updates.
+  ScrollTrigger is used only for scroll-driven effects (pin/scrub); it does not replace base animations.
+
+constraints:
+  - Do not modify base Chart.js animation config for initial draw/update.
+  - Load ScrollTrigger via CDN (GSAP core + ScrollTrigger) only when scrubbing is enabled.
+  - Keep ScrollTrigger code in a separate module `src/scroll/scrolltrigger.js`.
+  - Provide CSS class and JS function toggles to enable/disable scrubbing and pinning.
+  - Avoid heavy per-frame work; prefer driving a `clip` progress via a lightweight plugin.
+  - Ensure accessibility is not degraded when scrubbing is enabled.
+
+implementation_notes:
+  - Implement a lightweight Chart.js plugin `clipByProgress` that clips the chartArea width/height based on a 0..1 `progress` variable.
+  - ScrollTrigger updates `progress` on scroll; call `chart.update('none')` for smooth redraws.
+  - Keep legend/tooltips unaffected by clipping.
+  - Provide a fallback using IntersectionObserver to trigger a one-time grow animation if ScrollTrigger is absent (still using Chart.js animation).
+
+deliverables:
+  - src/scroll/scrolltrigger.js (registers plugin, wires GSAP ScrollTrigger to update `progress`).
+  - updates to index.html to conditionally include GSAP via script tags when a CSS class or build flag is present.
+  - README section describing how to enable scrubbing without affecting the default animation path.
+
+success_criteria:
+  - Default (no ScrollTrigger): smooth built-in Chart.js animations only.
+  - With scrubbing enabled: scroll controls the reveal with pinning; no jank; tooltips/legend remain correct.
+  - Easy to enable/disable via CSS/JS without code changes to the base chart.
